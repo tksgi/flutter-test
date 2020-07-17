@@ -11,7 +11,7 @@ jobs:
       matrix:
         node-version: [12.x]
     env:
-      ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY }} 
+      ANDROID_SIGN_KEY: ${{ secrets.ANDROID_SIGN_KEY_DEV }} 
       KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD_DEV }}
       KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS_DEV }}
       STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD_DEV }}
