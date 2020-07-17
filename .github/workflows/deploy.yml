@@ -30,7 +30,8 @@ jobs:
       - run: echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
       - run: echo "keyAlias=$KEY_ALIAS" >> android/local.properties
       - run: echo "storePassword=$STORRE_PASSWORD" >> android/local.properties
-      - run: flutter build apk --split-per-abi --target lib/main.dart --release
+      - run: cat android/local.properties
+      - run: flutter build apk --target lib/main.dart --release
       - run: npm install -g firebase-tools
       - run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app.apk \
