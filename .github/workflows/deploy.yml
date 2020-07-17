@@ -23,13 +23,13 @@ jobs:
       - run: echo ${{ secrets.ANDROID_SIGN_KEY_DEV }} | base64 -d > android/local.jks
       - run: echo "storeFile=$(pwd)/android/key.jks" > android/local.properties
       - shell: bash
-        - env: 
-            KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD_DEV }}
-            KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS_DEV }}
-            STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD_DEV }}
-        - run: echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
-        - run: echo "keyAlias=$KEY_ALIAS" >> android/local.properties
-        - run: echo "storePassword=$STORRE_PASSWORD" >> android/local.properties
+            - env: 
+                KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD_DEV }}
+                KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS_DEV }}
+                STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD_DEV }}
+            - run: echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
+            - run: echo "keyAlias=$KEY_ALIAS" >> android/local.properties
+            - run: echo "storePassword=$STORRE_PASSWORD" >> android/local.properties
       - run: flutter build apk --split-per-abi --target lib/main.dart --release
       - run: npm install -g firebase-tools
       - run: |
