@@ -20,7 +20,7 @@ class _OthelloScreenState extends State<OthelloScreen> {
   }
 
   void setPiece(int index) {
-    if (!othelloModel.canSetPiece(index)) {
+    if (!othelloModel.canSetPiece(index, currentTurn)) {
       return;
     }
     setState(() {
