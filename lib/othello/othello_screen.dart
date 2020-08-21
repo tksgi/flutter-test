@@ -25,11 +25,7 @@ class _OthelloScreenState extends State<OthelloScreen> {
     }
     setState(() {
       othelloModel.setPiece(index, currentTurn);
-      if (currentTurn == OthelloPiece.black) {
-        currentTurn = OthelloPiece.white;
-      } else {
-        currentTurn = OthelloPiece.black;
-      }
+      currentTurn = OthelloPieceHelper.anotherPiece(currentTurn);
     });
   }
 
