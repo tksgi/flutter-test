@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test_repository/home_screen.dart';
-import 'package:flutter_test_repository/othello.dart';
+import 'package:flutter_test_repository/othello/othello_screen.dart';
 
 void main() {
   runApp(MyApp());

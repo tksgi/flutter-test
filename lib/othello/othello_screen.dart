@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test_repository/othello/othello_model.dart';
 
 class OthelloScreen extends StatefulWidget {
   const OthelloScreen({Key key}) : super(key: key);
@@ -8,21 +9,27 @@ class OthelloScreen extends StatefulWidget {
 }
 
 class _OthelloScreenState extends State<OthelloScreen> {
-  List<OthelloPiece> board;
+  OthelloModel othelloModel;
+  OthelloPiece currentTurn;
 
   @override
   void initState() {
     super.initState();
-    board = List<OthelloPiece>.filled(64, null);
-    board[27] = OthelloPiece.white;
-    board[28] = OthelloPiece.black;
-    board[35] = OthelloPiece.black;
-    board[36] = OthelloPiece.white;
+    currentTurn = OthelloPiece.black;
+    othelloModel = OthelloModel();
   }
 
   void setPiece(int index) {
+    if (!othelloModel.canSetPiece(index)) {
+      return;
+    }
     setState(() {
-      board[index] = OthelloPiece.white;
+      othelloModel.setPiece(index, currentTurn);
+      if (currentTurn == OthelloPiece.black) {
+        currentTurn = OthelloPiece.white;
+      } else {
+        currentTurn = OthelloPiece.black;
+      }
     });
   }
 
@@ -30,11 +37,11 @@ class _OthelloScreenState extends State<OthelloScreen> {
   Widget build(BuildContext context) {
     const double cellSize = 45;
     final List<Widget> cellList = <Widget>[];
-    for (int i = 0; i < board.length; i++) {
+    for (int i = 0; i < othelloModel.board.length; i++) {
       cellList.add(
         Cell(
           cellSize: cellSize,
-          piece: board[i],
+          piece: othelloModel.board[i],
           index: i,
           setPiece: setPiece,
         ),
@@ -69,11 +76,6 @@ class _OthelloScreenState extends State<OthelloScreen> {
       ),
     );
   }
-}
-
-enum OthelloPiece {
-  black,
-  white,
 }
 
 class Cell extends StatelessWidget {
