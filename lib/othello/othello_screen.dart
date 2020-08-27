@@ -26,6 +26,7 @@ class _OthelloScreenState extends State<OthelloScreen> {
     setState(() {
       othelloModel.setPiece(index, currentTurn);
       currentTurn = OthelloPieceHelper.anotherPiece(currentTurn);
+      print(othelloModel.isGameOver);
     });
   }
 
@@ -62,11 +63,30 @@ class _OthelloScreenState extends State<OthelloScreen> {
                   width: 1,
                 ),
               ),
-              child: GridView.count(
-                crossAxisCount: 8,
-                children: cellList,
+              child: Stack(
+                children: <Widget>[
+                  GridView.count(
+                    crossAxisCount: 8,
+                    children: cellList,
+                  ),
+                  if (othelloModel.isGameOver)
+                    Center(
+                      child: Text(
+                        'Game Over',
+                        style: TextStyle(
+                          fontSize: 61,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
+          ),
+          Center(
+            child: Text(
+                '黒: ${othelloModel.pieceCount[OthelloPiece.black]} ,白:${othelloModel.pieceCount[OthelloPiece.white]}'),
           ),
         ],
       ),

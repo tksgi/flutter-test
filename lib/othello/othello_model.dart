@@ -8,11 +8,15 @@ class OthelloModel {
   }
 
   List<OthelloPiece> board;
+  bool isGameOver = false;
+  Map<OthelloPiece, int> pieceCount = <OthelloPiece, int>{
+    OthelloPiece.black: 2,
+    OthelloPiece.white: 2,
+  };
 
   bool canSetPiece(int currentIndex, OthelloPiece currentPiece) {
     if (board[currentIndex] != null) return false;
 
-    bool _canSetPiece = false;
     // 上方向
     List<int> indexBuffer = <int>[];
     for (int i = currentIndex - 8; i >= 0; i -= 8) {
@@ -20,26 +24,24 @@ class OthelloModel {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 下方向
     indexBuffer = <int>[];
-    for (int i = currentIndex + 8; i < 64; i += 8) {
+    for (int i = currentIndex + 8; i < board.length; i += 8) {
       if (board[i] == null) {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 左方向
     indexBuffer = <int>[];
@@ -49,12 +51,11 @@ class OthelloModel {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 右方向
     indexBuffer = <int>[];
@@ -64,12 +65,11 @@ class OthelloModel {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 左上
     indexBuffer = <int>[];
@@ -81,12 +81,11 @@ class OthelloModel {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 右上
     indexBuffer = <int>[];
@@ -98,46 +97,44 @@ class OthelloModel {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 左下
     indexBuffer = <int>[];
     row = (currentIndex / 8).floor();
     for (int i = currentIndex + 7;
-        i < 64 && (i / 8).floor() == row + 1;
+        i < board.length && (i / 8).floor() == row + 1;
         i += 7, row++) {
       if (board[i] == null) {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    if (_canSetPiece) return true;
 
     // 右下
     indexBuffer = <int>[];
     row = (currentIndex / 8).floor();
     for (int i = currentIndex + 9;
-        i < 64 && (i / 8).floor() == row + 1;
+        i < board.length && (i / 8).floor() == row + 1;
         i += 9, row++) {
       if (board[i] == null) {
         break;
       }
       if (board[i] == currentPiece) {
-        if (indexBuffer.length > 0) _canSetPiece = true;
+        if (indexBuffer.length > 0) return true;
         break;
       }
       indexBuffer.add(i);
     }
-    return _canSetPiece;
+    return false;
   }
 
   void setPiece(int currentIndex, OthelloPiece currentPiece) {
@@ -159,7 +156,7 @@ class OthelloModel {
 
     // 下方向
     indexBuffer = <int>[];
-    for (int i = currentIndex + 8; i < 64; i += 8) {
+    for (int i = currentIndex + 8; i < board.length; i += 8) {
       if (board[i] == null) {
         break;
       }
@@ -234,7 +231,7 @@ class OthelloModel {
     indexBuffer = <int>[];
     row = (currentIndex / 8).floor();
     for (int i = currentIndex + 7;
-        i < 64 && (i / 8).floor() == row + 1;
+        i < board.length && (i / 8).floor() == row + 1;
         i += 7, row++) {
       if (board[i] == null) {
         break;
@@ -250,7 +247,7 @@ class OthelloModel {
     indexBuffer = <int>[];
     row = (currentIndex / 8).floor();
     for (int i = currentIndex + 9;
-        i < 64 && (i / 8).floor() == row + 1;
+        i < board.length && (i / 8).floor() == row + 1;
         i += 9, row++) {
       if (board[i] == null) {
         break;
@@ -261,6 +258,26 @@ class OthelloModel {
       }
       indexBuffer.add(i);
     }
+    setPieceCount();
+    isGameOver = confirmGameOver(OthelloPieceHelper.anotherPiece(currentPiece));
+  }
+
+  void setPieceCount() {
+    pieceCount = <OthelloPiece, int>{
+      OthelloPiece.black: 0,
+      OthelloPiece.white: 0,
+    };
+    for (final OthelloPiece cell in board) {
+      if (cell == null) continue;
+      pieceCount[cell]++;
+    }
+  }
+
+  bool confirmGameOver(OthelloPiece piece) {
+    for (int i = 0; i < board.length; i++) {
+      if (canSetPiece(i, piece)) return false;
+    }
+    return true;
   }
 }
 
